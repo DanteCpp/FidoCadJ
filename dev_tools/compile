@@ -5,23 +5,25 @@ JAVA_TARGET_VERSION="1.7"
 SOURCE_PATH="src"
 CLASS_PATH="bin"
 
-JAVAC_DEBUG_OPTIONS="-g -Xlint:unchecked"
-JAVAC_JAVAV_OPTIONS="-source $JAVA_VERSION -target $JAVA_TARGET_VERSION"
-JAVAC_PATH_OPTIONS="-sourcepath $SOURCE_PATH -classpath $CLASS_PATH -d $CLASS_PATH"
-JAVAC_OPTIMIZATION_OPTIONS="-O"
+JC_DEBUG_OPTIONS="-g -Xlint:unchecked"
+JC_JAVAV_OPTIONS="-source $JAVA_VERSION -target $JAVA_TARGET_VERSION"
+JC_PATH_OPTIONS="-sourcepath $SOURCE_PATH -classpath $CLASS_PATH -d $CLASS_PATH"
+JC_OPTIMIZATION_OPTIONS="-O"
 
-JAVAC_OPTIONS="$JAVAC_PATH_OPTIONS $JAVAC_JAVAV_OPTIONS $JAVAC_OPTIMIZATION_OPTIONS"
+JC_OPTIONS="$JC_PATH_OPTIONS $JC_JAVAV_OPTIONS $JC_OPTIMIZATION_OPTIONS"
 
 ############## Darwin kernel detection ##############
 
+MAC=false
 unamestr=`uname`
 
 if test "$unamestr" = 'Darwin'
 then
   echo "MacOSX detected: activated AppleSpecific classes."
-  javac $JAVAC_OPTIONS ./src/net/sourceforge/fidocadj/AppleSpecific.java
+  javac $JC_OPTIONS ./src/net/sourceforge/fidocadj/AppleSpecific.java
   echo "Copying Quaqua library files in jar/ directory."
   cp OSes/mac/Quaqua/*.* jar
+  MAC=true
 fi
 
 
@@ -33,13 +35,16 @@ for arg in $@
 do
     case $arg in
         -debug)
-            JAVAC_OPTIONS="$JAVAC_OPTIONS $JAVAC_DEBUG_OPTIONS"
+            JAVAC_OPTIONS="$JC_OPTIONS $JC_DEBUG_OPTIONS"
                 ;;
         -mac)
-            echo "MacOSX detected: activated AppleSpecific classes."
-            javac $JAVAC_OPTIONS ./src/net/sourceforge/fidocadj/AppleSpecific.java
-            echo "Copying Quaqua library files in jar/ directory."
-            cp OSes/mac/Quaqua/*.* jar
+            if test ! MAC
+            then
+                echo "MacOSX detected: activated AppleSpecific classes."
+                javac $JC_OPTIONS ./src/net/sourceforge/fidocadj/AppleSpecific.java
+                echo "Copying Quaqua library files in jar/ directory."
+                cp OSes/mac/Quaqua/*.* jar
+            fi
                 ;;
         -applets)
             WHAT_COMPILE="applets"
@@ -58,16 +63,16 @@ done
 
 case $WHAT_COMPILE in
     applets)
-        javac $JAVAC_OPTIONS ./src/net/sourceforge/fidocadj/FidoReadApplet.java
-        javac $JAVAC_OPTIONS ./src/net/sourceforge/fidocadj/FidoCadApplet.java
+        javac $JC_OPTIONS ./src/net/sourceforge/fidocadj/FidoReadApplet.java
+        javac $JC_OPTIONS ./src/net/sourceforge/fidocadj/FidoCadApplet.java
             ;;
     all)
-        javac $JAVAC_OPTIONS ./src/net/sourceforge/fidocadj/FidoMain.java
-        javac $JAVAC_OPTIONS ./src/net/sourceforge/fidocadj/FidoReadApplet.java
-        javac $JAVAC_OPTIONS ./src/net/sourceforge/fidocadj/FidoCadApplet.java
+        javac $JC_OPTIONS ./src/net/sourceforge/fidocadj/FidoMain.java
+        javac $JC_OPTIONS ./src/net/sourceforge/fidocadj/FidoReadApplet.java
+        javac $JC_OPTIONS ./src/net/sourceforge/fidocadj/FidoCadApplet.java
             ;;
     FidoCadJ)
-        javac $JAVAC_OPTIONS ./src/net/sourceforge/fidocadj/FidoMain.java
+        javac $JC_OPTIONS ./src/net/sourceforge/fidocadj/FidoMain.java
             ;;
 esac
 
