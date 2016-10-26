@@ -2,41 +2,39 @@
 
 DEST_DIR="/usr/local/share/fidocadj"
 
-if test -d "$DEST_DIR/bin"
+if test -d "$DEST_DIR"
 then
-    cp jar/fidocadj.jar "$DEST_DIR/bin"
+    rm -r "$DEST_DIR"
+    mkdir "$DEST_DIR"
 else
-    mkdir "$DEST_DIR/bin"
-    cp jar/fidocadj.jar "$DEST_DIR/bin"
+    mkdir "$DEST_DIR"
 fi
 
+mkdir "$DEST_DIR/bin"
+cp jar/fidocadj.jar "$DEST_DIR/bin"
 
-if test -d "$DEST_DIR/desktop"
-then
-    cp OSes/linux/fidocadj.desktop "$DEST_DIR/desktop"
-else
-    mkdir "$DEST_DIR/desktop"
-    cp OSes/linux/fidocadj.desktop "$DEST_DIR/desktop"
-fi
+mkdir "$DEST_DIR/desktop"
+cp OSes/linux/fidocadj.desktop "$DEST_DIR/desktop"
 
-if test -d "$DEST_DIR/icon"
-then
-    cp OSes/linux/fidocadj.png "$DEST_DIR/icon"
-else
-    mkdir "$DEST_DIR/icon"
-    cp OSes/linux/fidocadj.png "$DEST_DIR/icon"
-fi
+mkdir "$DEST_DIR/icon"
+cp OSes/linux/fidocadj.png "$DEST_DIR/icon"
 
 chown root:root /usr/local/share/fidocadj/bin/fidocadj.jar
 chmod 755 /usr/local/share/fidocadj/bin/fidocadj.jar
 
-if test ! -h /usr/local/bin/fidocadj.jar
+if test -h /usr/local/bin/fidocadj.jar
 then
+    rm /usr/local/bin/fidocadj.jar
+    ln -s /usr/local/share/fidocadj/bin/fidocadj.jar /usr/local/bin/fidocadj.jar
+else 
     ln -s /usr/local/share/fidocadj/bin/fidocadj.jar /usr/local/bin/fidocadj.jar
 fi
 
-if test ! -h /usr/share/applications/fidocadj.desktop
+if test -h /usr/share/applications/fidocadj.desktop
 then
+    rm /usr/share/applications/fidocadj.desktop
+    ln -s /usr/local/share/fidocadj/desktop/fidocadj.desktop /usr/share/applications/fidocadj.desktop
+else 
     ln -s /usr/local/share/fidocadj/desktop/fidocadj.desktop /usr/share/applications/fidocadj.desktop
 fi
 
